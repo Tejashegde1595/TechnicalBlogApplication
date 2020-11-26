@@ -1,45 +1,49 @@
 package technicalBlog.service;
 
+import org.jboss.logging.annotations.Pos;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import technicalBlog.model.Post;
+import technicalBlog.repository.PostRepository;
 
+import javax.persistence.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class PostService {
-    public ArrayList<Post> getAllPosts(){
-        Post post1  = new Post();
-        post1.setTitle("Post1");
-        post1.setBody("Post1 Body");
-        post1.setDate(new Date());
+    @Autowired
+    private PostRepository repository;
 
-        Post post2 = new Post();
-        post2.setTitle("Post1");
-        post2.setBody("Post1 Body");
-        post2.setDate(new Date());
-
-        Post post3 = new Post();
-        post3.setTitle("Post1");
-        post3.setBody("Post1 Body");
-        post3.setDate(new Date());
-
-        ArrayList<Post> posts = new ArrayList<Post>();
-        posts.add(post1);
-        posts.add(post2);
-        posts.add(post3);
-
-        return posts;
+    @PersistenceUnit(name = "techblog")
+    private EntityManagerFactory emf;
+    public List<Post> getAllPosts() {
+        return repository.getAllPosts();
     }
 
-    public ArrayList<Post> getOnePost(){
-        Post post1  = new Post();
-        post1.setTitle("First Post");
-        post1.setBody("First Post Body");
-        post1.setDate(new Date());
+    public Post getOnePost(){
+       return repository.getPost();
+    }
 
-        ArrayList<Post> posts = new ArrayList<Post>();
-        posts.add(post1);
-        return posts;
+    public void createPost(Post post){
+        post.setDate(new Date());
+        repository.createPost(post);
+
+        System.out.println("New post added:"+post);
+    }
+
+    public Post getPost(Integer postId) {
+        return repository.getPost(postId);
+    }
+
+    public void updatePost(Post updatedPost) {
+        updatedPost.setDate(new Date());
+        repository.updatePost(updatedPost);
+    }
+
+    public void deletePost(Integer postId) {
+        repository.deletePost(postId);
     }
 }
